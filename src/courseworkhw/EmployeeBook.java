@@ -3,33 +3,31 @@ package courseworkhw;
 import java.util.Locale;
 
 public class EmployeeBook {
-    public static int subArraySize;//содержит количество записей в подмассиве без null-полей
+    public int subArraySize;//содержит количество записей в подмассиве без null-полей
     private final Employee[] employees;
     public EmployeeBook() {
         this.employees = new Employee[10];
     }
 
-    //служебный метод сборка подмассива без пустых полей
-    public Employee[] createSubArrayWithoutNull() {
-        Employee[] employeesSubArray = new Employee[employees.length];
-        subArraySize = 0;
-        for (int i = 0; i < employees.length; i++) {
-            if (employees[i] != null) {
-                employeesSubArray[subArraySize] = employees[i];
-                subArraySize++;
+
+    //служебный метод, возврящает количество сотрудников" по заданному отделу, если dept=0, считается общее число
+    private int getEmployeeQty(int dept) {
+        int employeesQty = 0;
+        for (Employee employee : employees ) {
+            if (employee != null && (employee.getDepartment() == dept || dept == 0)) {
+                employeesQty++;
             }
         }
-        return employeesSubArray;
+        return employeesQty;
     }
-
     //метод - "вывести в консоль список сотрудников" (без null полей)
     public void printEmployeeListWithoutNull () {
-        Employee[] subArray = createSubArrayWithoutNull();
-        System.out.println("\nCписок сотрудников: ");
-        for (int i = 0; i < subArraySize; i++) {
-            System.out.println(subArray[i]);
+        System.out.println("\nСписок данных всех сотрудников:");
+        for (Employee employee : employees) {
+            if (employee != null) {
+                System.out.println(employee);
+            }
         }
-        System.out.println("Всего заполненных полей: " + subArraySize);
     }
     //метод "добавить сотрудника"
     public void addEmployee(String name, int department, double salary) {
@@ -49,149 +47,133 @@ public class EmployeeBook {
     }
     //метод "удалить сотрудника"
     public void deleteEmployee(int id) {
-        for (int i = 0; i < Employee.getEmploeeQty(); i++) {
-            if (employees[i] != null) {//проверка на пустую ячейку
-                if (employees[i].getId() == id) {
-                    System.out.println("\nЗапись о сотруднике " + employees[i].getName() + " УДАЛЕНА");
-                    employees[i] = null;
+        for (Employee employee : employees) {
+            if (employee != null && employee.getId() == id) {
+                    System.out.println("\nЗапись о сотруднике " + employee.getName() + " УДАЛЕНА");
+                    employee = null;
                     break;
-                }
             }
-        }
-    }
-    //тестовый метод для вывода всего массива employees[]
-    public void printAllArray() {
-        System.out.println("\nПечать всего массива employees[]");
-        for (Employee entry : employees) {
-            System.out.println(entry);
         }
     }
     //метод "посчитать сумму затрат в месяц"
     public double calculateSalarySum() {
-        Employee[] subArray = createSubArrayWithoutNull();
         double sum = 0;
-        for (int i = 0; i < subArraySize; i++) {
-            sum = sum + subArray[i].getSalary();
+        for (Employee employee : employees) {
+            if (employee != null) {
+                sum = sum + employee.getSalary();
+            }
         }
         return sum;
     }
     //метод "найти сотрудника с минимальной зарплатой"
-    public void printNameOfMinSalaryEmploee() {
-        Employee[] subArray = createSubArrayWithoutNull();
-        double minSalary = subArray[0].getSalary();
-        int index = 0;
-        for (int i = 1; i < subArraySize ; i++) {
-            if (subArray[i].getSalary() < minSalary) {
-                minSalary = subArray[i].getSalary();
-                index = i;
+    public String getMinSalaryEmploee() {
+        String nameOfMinSalaryEmployee = null;
+        Double minSalary = Double.MAX_VALUE;
+        for (Employee employee: employees) {
+            if(employee != null && employee.getSalary() < minSalary) {
+                minSalary = employee.getSalary();
+                nameOfMinSalaryEmployee = employee.getName();
             }
         }
-        System.out.println("Сотрудник с минимальной зарплатой: " + subArray[index].getName());
+        return nameOfMinSalaryEmployee;
     }
+
     //метод "найти сотрудника с максимальной зарплатой"
-    public void printNameOfMaxSalaryEmploee() {
-        Employee[] subArray = createSubArrayWithoutNull();
-        double maxSalary = subArray[0].getSalary();
-        int index = 0;
-        for (int i = 1; i < subArraySize; i++) {
-            if (subArray[i].getSalary() > maxSalary) {
-                maxSalary = subArray[i].getSalary();
-                index = i;
+    public String getMaxSalaryEmploee() {
+        String nameOfMaxSalaryEmployee = null;
+        double maxSalary = Double.MIN_VALUE;
+        for (Employee employee: employees) {
+            if (employee != null && employee.getSalary() > maxSalary) {
+                maxSalary = employee.getSalary();
+                nameOfMaxSalaryEmployee = employee.getName();
             }
         }
-        System.out.println("Сотрудник с максимальной зарплатой: " + subArray[index].getName());
+        return nameOfMaxSalaryEmployee;
     }
     //метод "расчитать среднее значение зарплаты"
     public double calculateAverageSalary() {
-        return calculateSalarySum()/subArraySize;
+        int employeesQty = getEmployeeQty(0);
+        if (employeesQty != 0) {
+            return calculateSalarySum()/employeesQty;
+        } else {
+            return 0D;
+        }
     }
 
     //метод "вывести в консоль ФИО всех сотрудников"
     public void printNameList() {
-        Employee[] subArray = createSubArrayWithoutNull();
         System.out.println("\nСписок имён всех сотрудников:");
-        for (int i = 0; i < subArraySize; i++) {
-            System.out.println(subArray[i].getName());
+        for (Employee employee : employees) {
+            if (employee != null) {
+                System.out.println(employee.getName());
+            }
         }
     }
     //метод "индексация зарплат на заданный процент
     public void makeSalaryIndexation (int indexationPercentage) {
-        Employee[] subArray = createSubArrayWithoutNull();
         double increaseRate = 1 + indexationPercentage / 100D;
-        for (int i = 0; i < subArraySize; i++) {
-            subArray[i].setSalary(subArray[i].getSalary() * increaseRate );
+        for (Employee employee : employees) {
+            if (employee != null) {
+                employee.setSalary(employee.getSalary() * increaseRate);
+            }
         }
         System.out.println("\nЗарплата проиндексирована на " + indexationPercentage + "%");
     }
     //делаем служебный метод, собирающий массив сотрудников по заданному отделу
-    public Employee[] makeDepartmentArray(int department) {
-        Employee[] subArray = createSubArrayWithoutNull();
+    private Employee[] makeDepartmentArray(int department) {
         //собираем массив сотрудника отдела
-        int deptEmploeeQty = 0;
-        Employee[] deptEmployees = new Employee[subArraySize];
-        for (int i = 0; i < subArraySize; i++) {
-            if (subArray[i].getDepartment() == department) {
-                deptEmployees[deptEmploeeQty] = subArray[i];
-                deptEmploeeQty++;
+        int deptEmploeeIndex = 0;
+        Employee[] deptEmployees = new Employee[getEmployeeQty(department)];
+        for (int i = 0; i < employees.length; i++) {
+            if (employees[i] != null && employees[i].getDepartment() == department) {
+                deptEmployees[deptEmploeeIndex] = employees[i];
+                deptEmploeeIndex++;
             }
         }
-        //создаём массив без пустых полей и возвращаем его
-        Employee[] deptEmployeesModified = new Employee[deptEmploeeQty];
-        for (int i = 0; i < deptEmploeeQty; i++) {
-            deptEmployeesModified[i] = deptEmployees[i];
-        }
-        return deptEmployeesModified;
+        return deptEmployees;
     }
-    //служебный метод "вывести в консоль список сотрудников по заданному отделу"
+    //метод "вывести в консоль список сотрудников по заданному отделу"
     public void printDepartmentEmployeeList(int department) {
         Employee[] deptEmployees = makeDepartmentArray(department);
-        System.out.println("\nСписок сотрудников " + department + " отдела");
-        for (int i = 0; i < deptEmployees.length; i++) {
-            System.out.printf(Locale.US, "Ф.И.О.: " + deptEmployees[i].getName() +
-                    "; зарплата: %.2fр.; id: " + deptEmployees[i].getId() +
-                    "\n", deptEmployees[i].getSalary());
-        }
-        if (deptEmployees.length == 0) {
+        if (deptEmployees.length != 0) {
+            System.out.println("\nСписок сотрудников " + department + " отдела");
+            for (Employee employee : deptEmployees) {
+                System.out.printf(Locale.US, "Ф.И.О.: " + employee.getName() +
+                        "; зарплата: %.2fр.; id: " + employee.getId() +
+                        "\n", employee.getSalary());
+            }
+        } else {
             System.out.println("В отделе нет сотрудников");
         }
     }
 
     //метод "ищем сотрудника с минимальной зарплатой по отделу"
-    public void printMinSalaryEmployeeInDept(int department) {
-        Employee[] deptEmployees = makeDepartmentArray(department);
-        if (deptEmployees.length != 0) {//проверка на пустой отдел
-            double minSalary = deptEmployees[0].getSalary();
-            int index = 0;
-            for (int i = 1; i < deptEmployees.length; i++) {
-                if (deptEmployees[i].getSalary() < minSalary) {
-                    minSalary = deptEmployees[i].getSalary();
-                    index = i;
-                }
+    public String getMinSalaryEmploeeInDept(int department) {
+        Employee[] deptEmploees = makeDepartmentArray(department);
+        String nameOfMinSalaryEmployee = null;
+        Double minSalary = Double.MAX_VALUE;
+        for (Employee employee: deptEmploees) {
+            if(employee != null && employee.getSalary() < minSalary) {
+                minSalary = employee.getSalary();
+                nameOfMinSalaryEmployee = employee.getName();
             }
-            System.out.println("\nСотрудник с минимальной зарплатой в отделе " + department +
-                    ": " + deptEmployees[index].getName());
-        } else {
-            System.out.println("В базе нет сотрудников из отдела " + department);
         }
+        return nameOfMinSalaryEmployee;
     }
 
-    //метод "ищем сотрудника с минимальной зарплатой по отделу"
-    public  void printMaxSalaryEmployeeInDept(int department) {
+
+    //метод "ищем сотрудника с максимальной зарплатой по отделу"
+    public String getMaxSalaryEmployeeInDept(int department) {
         Employee[] deptEmployees = makeDepartmentArray(department);
-        if (deptEmployees.length != 0) {//проверка на пустой отдел
-            double maxSalary = deptEmployees[0].getSalary();
-            int index = 0;
-            for (int i = 1; i < deptEmployees.length; i++) {
-                if (deptEmployees[i].getSalary() > maxSalary) {
-                    maxSalary = deptEmployees[i].getSalary();
-                    index = i;
-                }
+        String nameOfMaxSalaryEmployee = null;
+        double maxSalary = Double.MIN_VALUE;
+        for (Employee employee: deptEmployees) {
+            if (employee != null && employee.getSalary() > maxSalary) {
+                maxSalary = employee.getSalary();
+                nameOfMaxSalaryEmployee = employee.getName();
             }
-            System.out.println("\nСотрудник с максимальной зарплатой в отделе " + department +
-                    ": " + deptEmployees[index].getName());
-        } else {
-            System.out.println("В базе нет сотрудников из отдела " + department);
         }
+        return nameOfMaxSalaryEmployee;
     }
 
     //метод "расчитать сумму затрат по отделу"
@@ -199,8 +181,8 @@ public class EmployeeBook {
         Employee[] deptEmployees = makeDepartmentArray(department);
         if (deptEmployees.length != 0) {//проверка на пустой отдел
             double sum = 0;
-            for (int i = 0; i < deptEmployees.length; i++) {
-                sum = sum + deptEmployees[i].getSalary();
+            for (Employee employee : deptEmployees) {
+                sum = sum + employee.getSalary();
             }
             return sum;
         } else {
@@ -214,7 +196,7 @@ public class EmployeeBook {
         Employee[] deptEmployees = makeDepartmentArray(department);
         if (deptEmployees.length != 0) {//проверка на пустой отдел
             //условие - если количество людей в отделе совпадает с общим числом сотрудников
-            if (deptEmployees.length == subArraySize) {
+            if (deptEmployees.length == getEmployeeQty(0)) {
                 throw new IllegalArgumentException("количество людей в отделе совпадает с общим числом сотрудников");
             } else {
                 return calculateDeptSalarySum(department) / deptEmployees.length;
@@ -230,8 +212,8 @@ public class EmployeeBook {
         Employee[] deptEmployees = makeDepartmentArray(department);
         if (deptEmployees.length != 0) {//проверка на пустой отдел
             double increaseRate = 1 + indexationPercentage / 100D;
-            for (int i = 0; i < deptEmployees.length; i++) {
-                deptEmployees[i].setSalary(deptEmployees[i].getSalary() * increaseRate);
+            for (Employee employee : deptEmployees) {
+                employee.setSalary(employee.getSalary() * increaseRate);
             }
             System.out.println("\nЗарплата по отделу " + department + " проиндексирована на " + indexationPercentage + "%");
         } else {
@@ -241,24 +223,22 @@ public class EmployeeBook {
 
     //метод для вывода списка сотрудников с ЗП меньше заданного значения
     public void printEmployeesWithSalaryLessThan (double edgeSalary) {
-        Employee[] subArray = createSubArrayWithoutNull();
         System.out.println("\nСписок сотрудников с зарплатой меньше " + edgeSalary + "р.");
-        for (int i = 0; i < subArraySize; i++) {
-            if (subArray[i].getSalary() < edgeSalary) {
-                System.out.printf(Locale.US, "id: " + subArray[i].getId() + "; Ф.И.О.: " +
-                        subArray[i].getName() + "; зарплата: %.2fр.\n", subArray[i].getSalary());
+        for (Employee employee : employees) {
+            if (employee != null && employee.getSalary() < edgeSalary) {
+                System.out.printf(Locale.US, "id: " + employee.getId() + "; Ф.И.О.: " +
+                        employee.getName() + "; зарплата: %.2fр.\n", employee.getSalary());
             }
         }
     }
 
     //метод для вывода списка сотрудников с ЗП больше заданного значения
     public void printEmployeesWithSalaryMoreThan (double edgeSalary) {
-        Employee[] subArray = createSubArrayWithoutNull();
         System.out.println("\nСписок сотрудников с зарплатой больше или равно " + edgeSalary + "р.");
-        for (int i = 0; i < subArraySize; i++) {
-            if (subArray[i].getSalary() >= edgeSalary) {
-                System.out.printf(Locale.US, "id: " + subArray[i].getId() + "; Ф.И.О.: " +
-                        subArray[i].getName() + "; зарплата: %.2fр.\n", subArray[i].getSalary());
+        for (Employee employee : employees) {
+            if (employee != null && employee.getSalary() >= edgeSalary) {
+                System.out.printf(Locale.US, "id: " + employee.getId() + "; Ф.И.О.: " +
+                        employee.getName() + "; зарплата: %.2fр.\n", employee.getSalary());
             }
         }
     }

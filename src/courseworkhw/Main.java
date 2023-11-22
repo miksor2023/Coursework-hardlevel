@@ -18,16 +18,15 @@ public class Main {
         employeeBook.addEmployee("Жорин Евгений Михайлович", 1, 78050);
         employeeBook.addEmployee("Кабанов Абрам Романович", 3, 33300);
 
-        //выводим в консоль содержимое всего массива employees[]
-        employeeBook.printAllArray();
+        employeeBook.printEmployeeListWithoutNull();
+
 
         //удаляем 3-х сотрудников
         employeeBook.deleteEmployee(2);
         employeeBook.deleteEmployee(5);
         employeeBook.deleteEmployee(6);
 
-        //выводим массив employees
-        employeeBook.printAllArray();
+
         //выводим список всех заполненных полей книги сотрудников без null-полей
         employeeBook.printEmployeeListWithoutNull();
 
@@ -43,10 +42,10 @@ public class Main {
         System.out.println("\nСумма затрат на зарплату за месяц: " + employeeBook.calculateSalarySum() + "p.");
 
         //печатаем имя сотрудника с минимальной зарплатой
-        employeeBook.printNameOfMinSalaryEmploee();
+        System.out.println("Сотрудник с минимальной зарплатой: " + employeeBook.getMinSalaryEmploee());
 
         //печатаем имя сотрудника с максимальной зарплатой
-        employeeBook.printNameOfMaxSalaryEmploee();
+        System.out.println("Сотрудник с максимальной зарплатой: " + employeeBook.getMaxSalaryEmploee());
 
         //расчитываем и выводим среднюю зарплату
         System.out.printf(Locale.US, "Среднее значение зарплат: %.2fр.\n", employeeBook.calculateAverageSalary());
@@ -60,12 +59,16 @@ public class Main {
         //выводим для проверки список полей книги сотрудников
         employeeBook.printEmployeeListWithoutNull();
 
+        //выводим список сотрудников по заданному отделу
+        employeeBook.printDepartmentEmployeeList(1);
+
+
         //методы для отделов
         //Ищем и выводим сотрудника с минимальной ЗП для отдела 1
-        employeeBook.printMinSalaryEmployeeInDept(1);
+        System.out.println("\nСотрудник с минимальной зарплатой в отделе " + employeeBook.getMinSalaryEmploeeInDept(1));
 
         //Ищем и выводим сотрудника с максимальной ЗП для отдела 1
-        employeeBook.printMaxSalaryEmployeeInDept(1);
+        System.out.println("\nСотрудник с максимальной зарплатой в отделе " + employeeBook.getMaxSalaryEmployeeInDept(1));
 
         //считаем и выводим сумму затрат по отделу 1
         System.out.println("Сумма затрат в месяц в отделе: " + employeeBook.calculateDeptSalarySum(1) + "p.");

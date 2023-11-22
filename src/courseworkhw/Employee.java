@@ -7,7 +7,7 @@ public class Employee {
     private int department;
     private double salary;
     private int id;
-    static int counter;
+    private static int counter = 1;
 
     public Employee(String name, int department, double salary) {
         this.name = name;
@@ -32,10 +32,6 @@ public class Employee {
     public int getId() {
         return id;
     }
-
-    public static int getEmploeeQty() {
-        return counter;
-    }//возвращает количество вызовов конструктора
 
     public void setDepartment(int department) {
         this.department = department;
